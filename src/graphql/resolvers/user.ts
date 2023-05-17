@@ -1,3 +1,4 @@
+import { User } from "next-auth";
 import { SessionContextValue } from "next-auth/react";
 import {
   CreateUsernameResponse,
@@ -6,7 +7,38 @@ import {
 } from "../../util/types";
 
 const resolvers = {
-  Query: {},
+  Query: {
+    searchUsers: async (
+      _: any,
+      args: { username: string; session: Session },
+      context: GraphQLContext
+    ): Promise<Array<User>> => {
+      const { username: SearchedUserName, session } = args;
+      const { prisma } = context;
+
+      if (!session?.user) throw new Error("Not authorized");
+
+      const {
+        user: { username: currentUserName },
+      } = session;
+
+      try {
+        const users = await prisma.user.findMany({
+          where: {
+            username: {
+              contains: SearchedUserName,
+              not: currentUserName,
+              mode: "insensitive",
+            },
+          },
+        });
+        return users;
+      } catch (error: any) {
+        console.log("searchUser error", error);
+        throw new Error(error?.message);
+      }
+    },
+  },
   Mutation: {
     createUsername: async (
       _: any,

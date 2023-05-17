@@ -33,7 +33,7 @@ const typeDef = gql`
   }
 
   type Query {
-    searchUsers(username: String): [SearchedUser]
+    searchUsers(username: String, session: Session): [SearchedUser]
   }
   type Mutation {
     createUsername(username: String, session: Session): CreateUsernameResponse
