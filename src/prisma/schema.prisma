@@ -40,8 +40,9 @@ model User {
   name          String?
   email         String?   @unique
   username      String?   @unique
-//   conversations ConversationParticipant[]
-//   messages      Message[]
+  // Linking User to the ConversationParticipant
+  conversations ConversationParticipant[] //user can have many conversations
+  messages      Message[]
   emailVerified DateTime?
   image         String?
   accounts      Account[]
@@ -57,35 +58,42 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// model Conversation {
-//   id              String  @id @default(auto()) @map("_id") @db.ObjectId
-//   messages        Message[]
-//   participants    ConversationParticipant[]
-//   latestMessageId String?  @unique
-//   latestMessage   Message? @relation(name: "latestConversationMessage", fields: [latestMessageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-//   createdAt       DateTime @default(now())
-//   updatedAt       DateTime @updatedAt 
-// }
+model Conversation {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  messages        Message[]
+  // Linking Conversation to the ConversationParticipant
+  participants    ConversationParticipant[] // Conversation can have many participants
+  latestMessageId String?  @unique
+  // One to One relationship
+  // need a unique name because more than one relationship is defined
+  latestMessage   Message? @relation(name: "latestConversationMessage", fields: [latestMessageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt 
+}
 
-// model ConversationParticipant {
-//   id                    String  @id @default(auto()) @map("_id") @db.ObjectId
-//   userId                String
-//   user                  User  @relation(fields: [userId], references: [id])
-//   conversationId        String
-//   conversation          Conversation @relation(fields: [conversationId], references: [id])
-//   hasSeenLatestMessage  Boolean
-//   createdAt             DateTime @default(now())
-//   updatedAt             DateTime @updatedAt 
-// }
+model ConversationParticipant {
+  id                    String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId                String
+  // Link userId on ConversationParticipant to the id of User model by using @relation function
+  user                  User  @relation(fields: [userId], references: [id])
+  conversationId        String
+  // Link userId on ConversationParticipant to the id of Conversation model by using @relation function
+  conversation          Conversation @relation(fields: [conversationId], references: [id])
+  hasSeenLatestMessage  Boolean
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt 
+}
 
-// model Message {
-//     id                String  @id @default(auto()) @map("_id") @db.ObjectId
-//     conversationId    String
-//     conversation      Conversation @relation(fields: [conversationId], references: [id])
-//     senderId          String
-//     sender            User @relation(fields: [senderId], references: [id])
-//     body              String
-//     isLatestIn        Conversation? @relation(name: "latestConversationMessage")
-//     createdAt         DateTime @default(now())
-//     updatedAt         DateTime @updatedAt 
-// }
+model Message {
+    id                String  @id @default(auto()) @map("_id") @db.ObjectId
+    conversationId    String
+    // Link conversationId on Message to the id of Conversation model by using @relation function
+    conversation      Conversation @relation(fields: [conversationId], references: [id])
+    senderId          String
+    // Link senderId on Message to the id of User model by using @relation function
+    sender            User @relation(fields: [senderId], references: [id])
+    body              String
+    isLatestIn        Conversation? @relation(name: "latestConversationMessage")
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt 
+}

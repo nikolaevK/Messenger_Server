@@ -1,5 +1,4 @@
 import { User } from "next-auth";
-import { SessionContextValue } from "next-auth/react";
 import {
   CreateUsernameResponse,
   GraphQLContext,
