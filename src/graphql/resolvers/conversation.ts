@@ -96,7 +96,7 @@ const resolvers = {
             conversationCreated: { participants },
           } = payload;
           const { session } = args;
-          console.log("reaching", session);
+
           if (!session?.user) throw new Error("Not Authorized");
 
           const userIsParticipant = userIsConversationParticipant(
