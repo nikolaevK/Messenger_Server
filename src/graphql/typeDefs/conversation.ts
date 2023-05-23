@@ -9,8 +9,16 @@ const typeDef = gql`
   type Mutation {
     createConversation(
       participantIds: [String]
-      session: Session
+      session: Session!
     ): CreateConversationResponse
+  }
+
+  type Mutation {
+    markConversationAsRead(
+      conversationId: String!
+      session: Session!
+      userId: String!
+    ): Boolean
   }
 
   type Subscription {

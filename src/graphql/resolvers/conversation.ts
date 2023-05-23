@@ -79,6 +79,41 @@ const resolvers = {
         throw new Error("createConversation error");
       }
     },
+    markConversationAsRead: async function (
+      _: any,
+      args: { userId: string; session: Session; conversationId: string },
+      context: GraphQLContext
+    ): Promise<boolean> {
+      const { prisma } = context;
+      const { session, userId, conversationId } = args;
+
+      if (!session.user) throw new Error("Not Authorized");
+
+      try {
+        // getting the Id of a participant to update Reading status
+        const participant = await prisma.conversationParticipant.findFirst({
+          where: {
+            userId,
+            conversationId,
+          },
+        });
+
+        // Updating read status of a participant
+        await prisma.conversationParticipant.update({
+          where: {
+            id: participant?.id,
+          },
+          data: {
+            hasSeenLatestMessage: true,
+          },
+        });
+
+        return true;
+      } catch (error: any) {
+        console.log("markConversationAsRead", error);
+        throw new Error(error?.message);
+      }
+    },
   },
   Subscription: {
     conversationCreated: {
