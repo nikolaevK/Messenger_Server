@@ -47,6 +47,9 @@ const resolvers = {
     ): Promise<{ conversationId: string }> => {
       const { prisma, pubsub } = context;
       const { participantIds, session } = args;
+      const participants = participantIds.map((participant) =>
+        JSON.parse(participant)
+      );
 
       if (!session?.user) throw new Error("Not Authorized");
 
@@ -59,9 +62,10 @@ const resolvers = {
           data: {
             participants: {
               createMany: {
-                data: participantIds.map((id) => ({
-                  userId: id,
-                  hasSeenLatestMessage: id === userId,
+                data: participants.map((p) => ({
+                  userId: p.id,
+                  hasSeenLatestMessage: p.id === userId,
+                  imageUrl: p.image,
                 })),
               },
             },
@@ -155,6 +159,7 @@ export const participantPopulated =
       select: {
         id: true,
         username: true,
+        image: true,
       },
     },
   });
@@ -170,6 +175,7 @@ export const conversationPopulated =
           select: {
             id: true,
             username: true,
+            image: true,
           },
         },
       },

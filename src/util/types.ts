@@ -27,6 +27,12 @@ export interface User {
   name: string;
 }
 
+export interface ConversationParticipant {
+  id: string;
+  username: string;
+  image: string;
+}
+
 export interface CreateUsernameResponse {
   success?: boolean;
   error?: string;

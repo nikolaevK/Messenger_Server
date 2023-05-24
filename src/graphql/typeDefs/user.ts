@@ -1,14 +1,14 @@
 import gql from "graphql-tag";
 
 const typeDef = gql`
-  # type User {
-  #   id: String
-  #   name: String
-  #   username: String
-  #   email: String
-  #   emailVerified: Boolean
-  #   image: String
-  # }
+  type User {
+    id: String
+    name: String
+    username: String
+    email: String
+    emailVerified: Boolean
+    image: String
+  }
   type CreateUsernameResponse {
     success: Boolean
     error: String
@@ -16,6 +16,7 @@ const typeDef = gql`
   type SearchedUser {
     id: String
     username: String
+    image: String
   }
 
   input User {

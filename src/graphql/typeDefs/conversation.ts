@@ -55,6 +55,12 @@ const typeDef = gql`
     hasSeenLatestMessage: Boolean
   }
 
+  input ParticipantsInput {
+    id: String
+    image: String
+    username: String
+  }
+
   type UserType {
     id: String
     name: String
