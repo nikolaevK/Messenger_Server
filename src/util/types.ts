@@ -51,3 +51,11 @@ export interface SubscriptionContext extends Context {
     session?: Session;
   };
 }
+
+export interface sendMessageArgs {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  body: string;
+  session: Session;
+}
