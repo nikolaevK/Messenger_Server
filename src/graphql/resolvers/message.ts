@@ -13,7 +13,6 @@ const messageResolvers = {
       const { body, id: messageId, conversationId, senderId, session } = args;
 
       if (!session.user) throw new Error("Not Authorized");
-
       const {
         user: { id: userId },
       } = session;

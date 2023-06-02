@@ -52,10 +52,6 @@ async function main() {
   const server = new ApolloServer({
     schema,
     csrfPrevention: true,
-    // context: async ({ req, res }): Promise<GraphQLContext> => {
-    //   const session = (await getSession({ req })) as Session;
-    //   return { session, prisma, pubsub };
-    // },
     plugins: [
       // Proper shutdown for the HTTP server.
       ApolloServerPluginDrainHttpServer({ httpServer }),

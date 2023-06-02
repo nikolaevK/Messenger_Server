@@ -14,6 +14,7 @@ const typeDefs = gql`
       conversationId: String
       senderId: String
       body: String
+      session: Session
     ): Boolean
   }
 `;
