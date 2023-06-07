@@ -4,6 +4,7 @@ const typeDefs = gql`
   type Message {
     id: String
     sender: UserType
+    imageUrl: String
     body: String
     createdAt: Date
   }

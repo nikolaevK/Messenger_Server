@@ -43,7 +43,8 @@ model User {
   image         String    @unique
   // Linking User to the ConversationParticipant
   conversations ConversationParticipant[] @relation("UserID")//user can have many conversations
-  images        ConversationParticipant[] @relation("ImageURL")
+  imagesParticipant       ConversationParticipant[] @relation("ParticipantImageURL")
+  imagesMessage Message[]   @relation("MessageImageURL")
   messages      Message[]
   emailVerified DateTime?
   accounts      Account[]
@@ -78,7 +79,7 @@ model ConversationParticipant {
   // Link userId on ConversationParticipant to the id of User model by using @relation function
   user                  User    @relation("UserID",fields: [userId], references: [id])
   imageUrl              String 
-  userURL               User    @relation("ImageURL", fields: [imageUrl], references: [image])
+  userURL               User    @relation("ParticipantImageURL", fields: [imageUrl], references: [image])
   conversationId        String
   // Link userId on ConversationParticipant to the id of Conversation model by using @relation function
   conversation          Conversation @relation(fields: [conversationId], references: [id])
@@ -95,6 +96,8 @@ model Message {
     senderId          String
     // Link senderId on Message to the id of User model by using @relation function
     sender            User @relation(fields: [senderId], references: [id])
+    imageUrl          String 
+    userURL           User    @relation("MessageImageURL", fields: [imageUrl], references: [image])
     body              String
     isLatestIn        Conversation? @relation(name: "latestConversationMessage")
     createdAt         DateTime @default(now())

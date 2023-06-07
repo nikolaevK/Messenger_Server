@@ -50,6 +50,7 @@ const messageResolvers = {
             createdAt: "desc",
           },
         });
+
         return messages;
       } catch (error: any) {
         console.log("Get messages error:", error);
@@ -81,6 +82,7 @@ const messageResolvers = {
             senderId,
             conversationId,
             body,
+            imageUrl: session.user.image,
           },
           include: messagePopulated,
         });
