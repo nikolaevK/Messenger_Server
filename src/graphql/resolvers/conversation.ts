@@ -3,6 +3,7 @@ import { withFilter } from "graphql-subscriptions";
 import { userIsConversationParticipant } from "../../util/functions";
 import {
   ConversationPopulated,
+  ConversationUpdatedSubscriptionPayload,
   GraphQLContext,
   Session,
 } from "../../util/types";
@@ -129,7 +130,7 @@ const resolvers = {
         (
           payload: ConversationCreatedSubscriptionPayload,
           args: { session: Session },
-          _
+          _: any
         ) => {
           const {
             conversationCreated: { participants },
@@ -143,6 +144,35 @@ const resolvers = {
             session.user.id
           );
           return userIsParticipant;
+        }
+      ),
+    },
+    conversationUpdated: {
+      subscribe: withFilter(
+        (_: any, __: any, context: GraphQLContext) => {
+          const { pubsub } = context;
+          return pubsub.asyncIterator(["CONVERSATION_UPDATED"]);
+        },
+        (
+          payload: ConversationUpdatedSubscriptionPayload,
+          args: { session: Session },
+          _: any
+        ) => {
+          const { session } = args;
+
+          if (!session?.user) {
+            throw new Error("Not Authorized");
+          }
+
+          const { id: userId } = session.user;
+          const {
+            conversationUpdated: {
+              conversation: { participants },
+            },
+          } = payload;
+
+          // emits updates to the participants of that conversation only
+          return userIsConversationParticipant(participants, userId);
         }
       ),
     },

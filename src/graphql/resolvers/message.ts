@@ -132,11 +132,11 @@ const messageResolvers = {
         });
 
         pubsub.publish("MESSAGE_SENT", { messageSent: newMessage }); // passing down new message to update the UI
-        // pubsub.publish("CONVERSATION_UPDATED", {
-        //   conversationUpdated: {
-        //     conversation,
-        //   },
-        // });
+        pubsub.publish("CONVERSATION_UPDATED", {
+          conversationUpdated: {
+            conversation,
+          },
+        });
       } catch (error: any) {
         console.log("sendMessage Error", error);
         throw new Error("sendMessage Error");

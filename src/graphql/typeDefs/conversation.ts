@@ -25,13 +25,18 @@ const typeDef = gql`
     conversationCreated(session: Session): Conversation
   }
 
+  type Subscription {
+    conversationUpdated(
+      session: Session
+    ): ConversationUpdatedSubscriptionPayload
+  }
+
   type CreateConversationResponse {
     conversationId: String
   }
 
-  type ConversationCreatedSubscriptionPayload {
+  type ConversationUpdatedSubscriptionPayload {
     conversation: Conversation
-    session: SessionType
   }
 
   type Conversation {
@@ -40,13 +45,6 @@ const typeDef = gql`
     participants: [Participant]
     createdAt: Date
     updatedAt: Date
-  }
-
-  type Message {
-    id: String
-    sender: UserType
-    body: String
-    createdAt: Date
   }
 
   type Participant {

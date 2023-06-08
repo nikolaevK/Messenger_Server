@@ -15,7 +15,7 @@ export interface GraphQLContext {
 }
 
 export interface Session {
-  user?: User;
+  user: User;
   expires: ISODateString;
 }
 
@@ -42,6 +42,12 @@ export interface CreateUsernameResponse {
 export type ConversationPopulated = Prisma.ConversationGetPayload<{
   include: typeof conversationPopulated;
 }>;
+
+export interface ConversationUpdatedSubscriptionPayload {
+  conversationUpdated: {
+    conversation: ConversationPopulated;
+  };
+}
 
 export type ParticipantPopulated = Prisma.ConversationParticipantGetPayload<{
   include: typeof participantPopulated;
