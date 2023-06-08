@@ -22,6 +22,10 @@ const typeDefs = gql`
       session: Session
     ): Boolean
   }
+
+  type Subscription {
+    messageSent(conversationId: String): Message
+  }
 `;
 
 export default typeDefs;

@@ -1,8 +1,10 @@
 import { Prisma } from "@prisma/client";
+import { withFilter } from "graphql-subscriptions";
 import { userIsConversationParticipant } from "../../util/functions";
 import {
   GraphQLContext,
   MessagePopulated,
+  MessageSentSubscriptionPayload,
   sendMessageArgs,
   Session,
 } from "../../util/types";
@@ -128,11 +130,38 @@ const messageResolvers = {
           },
           include: conversationPopulated,
         });
+
+        pubsub.publish("MESSAGE_SENT", { messageSent: newMessage }); // passing down new message to update the UI
+        // pubsub.publish("CONVERSATION_UPDATED", {
+        //   conversationUpdated: {
+        //     conversation,
+        //   },
+        // });
       } catch (error: any) {
         console.log("sendMessage Error", error);
         throw new Error("sendMessage Error");
       }
       return true;
+    },
+  },
+  Subscription: {
+    // Updates UI on the front end to display newly sent message to conversation participants
+    messageSent: {
+      subscribe: withFilter(
+        (_: any, __: any, context: GraphQLContext) => {
+          const { pubsub } = context;
+          return pubsub.asyncIterator(["MESSAGE_SENT"]);
+        },
+        (
+          payload: MessageSentSubscriptionPayload,
+          args: { conversationId: string },
+          context: GraphQLContext
+        ) => {
+          // Only push an update if the message is in
+          // the right conversation
+          return payload.messageSent.conversationId === args.conversationId;
+        }
+      ),
     },
   },
 };
