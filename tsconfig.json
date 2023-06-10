@@ -25,9 +25,10 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "*": ["types/*"]
+      "*": ["node_modules/*"]
     }
   },
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
 // "outDir": "dist",

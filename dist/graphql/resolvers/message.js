@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { withFilter } from "graphql-subscriptions";
-import { userIsConversationParticipant } from "../../util/functions";
+import { userIsConversationParticipant } from "../../util/functions.js";
 import { conversationPopulated } from "./conversation";
 const messageResolvers = {
     Query: {
