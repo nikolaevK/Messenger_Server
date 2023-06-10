@@ -5,7 +5,7 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  binaryTargets = ["native", "darwin", "darwin-arm64"]
+  binaryTargets = ["native", "darwin-arm64", "darwin", "darwin-arm64", "debian-openssl-3.0.x"]
 }
 
 model Account {
