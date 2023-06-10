@@ -6,8 +6,8 @@ import { Context } from "graphql-ws/lib/server";
 import {
   conversationPopulated,
   participantPopulated,
-} from "../graphql/resolvers/conversation";
-import { messagePopulated } from "../graphql/resolvers/message";
+} from "../graphql/resolvers/conversation.js";
+import { messagePopulated } from "../graphql/resolvers/message.js";
 
 export interface GraphQLContext {
   prisma: PrismaClient;
