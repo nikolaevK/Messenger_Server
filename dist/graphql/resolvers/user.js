@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const resolvers = {
     Query: {
         searchUsers: async (_, args, context) => {
@@ -66,4 +64,4 @@ const resolvers = {
         },
     },
 };
-exports.default = resolvers;
+export default resolvers;

@@ -1,10 +1,5 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const graphql_tag_1 = __importDefault(require("graphql-tag"));
-const typeDef = (0, graphql_tag_1.default) `
+import gql from "graphql-tag";
+const typeDef = gql `
   type User {
     id: String
     name: String
@@ -44,4 +39,4 @@ const typeDef = (0, graphql_tag_1.default) `
     createUsername(username: String, session: Session): CreateUsernameResponse
   }
 `;
-exports.default = typeDef;
+export default typeDef;

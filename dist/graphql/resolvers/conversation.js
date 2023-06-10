@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.conversationPopulated = exports.participantPopulated = void 0;
-const client_1 = require("@prisma/client");
-const graphql_subscriptions_1 = require("graphql-subscriptions");
-const functions_1 = require("../../util/functions");
+import { Prisma } from "@prisma/client";
+import { withFilter } from "graphql-subscriptions";
+import { userIsConversationParticipant } from "../../util/functions";
 const resolvers = {
     Query: {
         conversations: async (_, args, context) => {
@@ -14,7 +11,7 @@ const resolvers = {
             const { user: { id: userId }, } = session;
             try {
                 const conversations = await prisma.conversation.findMany({
-                    include: exports.conversationPopulated,
+                    include: conversationPopulated,
                 });
                 // getting conversations which the user is part of
                 return conversations.filter((conversation) => !!conversation.participants.find((p) => p.userId === userId));
@@ -46,7 +43,7 @@ const resolvers = {
                             },
                         },
                     },
-                    include: exports.conversationPopulated,
+                    include: conversationPopulated,
                 });
                 pubsub.publish("CONVERSATION_CREATED", {
                     conversationCreated: conversation,
@@ -90,7 +87,7 @@ const resolvers = {
     },
     Subscription: {
         conversationCreated: {
-            subscribe: (0, graphql_subscriptions_1.withFilter)((_, __, context) => {
+            subscribe: withFilter((_, __, context) => {
                 const { pubsub } = context;
                 return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
             }, (payload, args, _) => {
@@ -98,12 +95,12 @@ const resolvers = {
                 const { session } = args;
                 if (!(session === null || session === void 0 ? void 0 : session.user))
                     throw new Error("Not Authorized");
-                const userIsParticipant = (0, functions_1.userIsConversationParticipant)(participants, session.user.id);
+                const userIsParticipant = userIsConversationParticipant(participants, session.user.id);
                 return userIsParticipant;
             }),
         },
         conversationUpdated: {
-            subscribe: (0, graphql_subscriptions_1.withFilter)((_, __, context) => {
+            subscribe: withFilter((_, __, context) => {
                 const { pubsub } = context;
                 return pubsub.asyncIterator(["CONVERSATION_UPDATED"]);
             }, (payload, args, _) => {
@@ -114,12 +111,12 @@ const resolvers = {
                 const { id: userId } = session.user;
                 const { conversationUpdated: { conversation: { participants }, }, } = payload;
                 // emits updates to the participants of that conversation only
-                return (0, functions_1.userIsConversationParticipant)(participants, userId);
+                return userIsConversationParticipant(participants, userId);
             }),
         },
     },
 };
-exports.participantPopulated = client_1.Prisma.validator()({
+export const participantPopulated = Prisma.validator()({
     user: {
         select: {
             id: true,
@@ -128,9 +125,9 @@ exports.participantPopulated = client_1.Prisma.validator()({
         },
     },
 });
-exports.conversationPopulated = client_1.Prisma.validator()({
+export const conversationPopulated = Prisma.validator()({
     participants: {
-        include: exports.participantPopulated,
+        include: participantPopulated,
     },
     latestMessage: {
         include: {
@@ -144,4 +141,4 @@ exports.conversationPopulated = client_1.Prisma.validator()({
         },
     },
 });
-exports.default = resolvers;
+export default resolvers;

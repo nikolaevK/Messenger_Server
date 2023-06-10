@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.messagePopulated = void 0;
-const client_1 = require("@prisma/client");
-const graphql_subscriptions_1 = require("graphql-subscriptions");
-const functions_1 = require("../../util/functions");
-const conversation_1 = require("./conversation");
+import { Prisma } from "@prisma/client";
+import { withFilter } from "graphql-subscriptions";
+import { userIsConversationParticipant } from "../../util/functions";
+import { conversationPopulated } from "./conversation";
 const messageResolvers = {
     Query: {
         messages: async function (_, args, context) {
@@ -18,12 +15,12 @@ const messageResolvers = {
                 where: {
                     id: conversationId,
                 },
-                include: conversation_1.conversationPopulated,
+                include: conversationPopulated,
             });
             if (!conversation)
                 throw new Error("Conversation not found!");
             // Checking if the user is participant of that conversation
-            const allowedToView = (0, functions_1.userIsConversationParticipant)(conversation.participants, userId);
+            const allowedToView = userIsConversationParticipant(conversation.participants, userId);
             if (!allowedToView)
                 throw new Error("Not Authorized");
             try {
@@ -31,7 +28,7 @@ const messageResolvers = {
                     where: {
                         conversationId,
                     },
-                    include: exports.messagePopulated,
+                    include: messagePopulated,
                     orderBy: {
                         createdAt: "desc",
                     },
@@ -63,7 +60,7 @@ const messageResolvers = {
                         body,
                         imageUrl: session.user.image,
                     },
-                    include: exports.messagePopulated,
+                    include: messagePopulated,
                 });
                 // Finding a conversationParticipant to update hasSeenLatest message
                 const participant = await prisma.conversationParticipant.findFirst({
@@ -103,7 +100,7 @@ const messageResolvers = {
                             },
                         },
                     },
-                    include: conversation_1.conversationPopulated,
+                    include: conversationPopulated,
                 });
                 pubsub.publish("MESSAGE_SENT", { messageSent: newMessage }); // passing down new message to update the UI
                 pubsub.publish("CONVERSATION_UPDATED", {
@@ -122,7 +119,7 @@ const messageResolvers = {
     Subscription: {
         // Updates UI on the front end to display newly sent message to conversation participants
         messageSent: {
-            subscribe: (0, graphql_subscriptions_1.withFilter)((_, __, context) => {
+            subscribe: withFilter((_, __, context) => {
                 const { pubsub } = context;
                 return pubsub.asyncIterator(["MESSAGE_SENT"]);
             }, (payload, args, context) => {
@@ -133,7 +130,7 @@ const messageResolvers = {
         },
     },
 };
-exports.messagePopulated = client_1.Prisma.validator()({
+export const messagePopulated = Prisma.validator()({
     sender: {
         select: {
             id: true,
@@ -141,4 +138,4 @@ exports.messagePopulated = client_1.Prisma.validator()({
         },
     },
 });
-exports.default = messageResolvers;
+export default messageResolvers;
