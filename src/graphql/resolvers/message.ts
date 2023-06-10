@@ -7,7 +7,7 @@ import {
   MessageSentSubscriptionPayload,
   sendMessageArgs,
   Session,
-} from "../../util/types";
+} from "../../util/types.js";
 import { conversationPopulated } from "./conversation.js";
 
 const resolvers = {
