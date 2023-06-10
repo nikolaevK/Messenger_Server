@@ -3,7 +3,7 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import cors from "cors";
-import { json } from "body-parser";
+import bodyParser from "body-parser";
 import express from "express";
 import http from "http";
 import typeDefs from "./graphql/typeDefs/index.js";
@@ -78,7 +78,7 @@ async function main() {
   app.use(
     "/graphql",
     cors<cors.CorsRequest>(corsOptions),
-    json(),
+    bodyParser.json(),
     expressMiddleware(server, {
       context: async ({ req, res }): Promise<GraphQLContext> => {
         return { prisma, pubsub };
