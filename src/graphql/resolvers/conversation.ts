@@ -6,7 +6,7 @@ import {
   ConversationUpdatedSubscriptionPayload,
   GraphQLContext,
   Session,
-} from "../../util/types";
+} from "../../util/types.js";
 
 const resolvers = {
   Query: {

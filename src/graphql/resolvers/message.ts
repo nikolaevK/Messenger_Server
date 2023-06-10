@@ -8,7 +8,7 @@ import {
   sendMessageArgs,
   Session,
 } from "../../util/types";
-import { conversationPopulated } from "./conversation";
+import { conversationPopulated } from "./conversation.js";
 
 const resolvers = {
   Query: {
