@@ -10,7 +10,7 @@ import {
 } from "../../util/types";
 import { conversationPopulated } from "./conversation";
 
-const messageResolvers = {
+const resolvers = {
   Query: {
     messages: async function (
       _: any,
@@ -175,4 +175,4 @@ export const messagePopulated = Prisma.validator<Prisma.MessageInclude>()({
   },
 });
 
-export default messageResolvers;
+export default resolvers;
