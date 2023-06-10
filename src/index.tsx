@@ -16,6 +16,7 @@ import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 
 // testing changes
+// added node modules
 
 async function main() {
   dotenv.config();
