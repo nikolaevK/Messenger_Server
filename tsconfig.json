@@ -1,6 +1,39 @@
+// {
+//   "compilerOptions": {
+//     "rootDirs": ["src"],
+//     "outDir": "dist",
+//     "lib": ["es2020"],
+//     "target": "es2020",
+//     "module": "esnext",
+//     "moduleResolution": "node",
+//     "esModuleInterop": true,
+//     "types": ["node"]
+//   }
+// }
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "esModuleInterop": true
-  }
+    "target": "es2018",
+    "module": "commonjs",
+    "lib": ["es2018", "dom"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["types/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
+// "outDir": "dist",
+// "esModuleInterop": true,
+// "target": "es2017",
+// "typeRoots": ["./typings", "./vendor/types"]
+// "moduleResolution": "NodeNext",
+// "jsx": "preserve"

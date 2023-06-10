@@ -17,7 +17,7 @@ const messageResolvers = {
       args: { conversationId: string; session: Session },
       context: GraphQLContext
     ): Promise<Array<MessagePopulated>> {
-      const { prisma, pubsub } = context;
+      const { prisma } = context;
       const { conversationId, session } = args;
 
       if (!session.user) throw new Error("Not Authorized");
