@@ -101,6 +101,7 @@ const resolvers = {
 
         // Update conversation entity to reflect the changes of latest message in conversation
         // Update hasSeenLatestMessage to reflect UI of a sender
+        console.log({ conversationId });
         const conversation = await prisma.conversation.update({
           where: {
             id: conversationId,
