@@ -54,6 +54,7 @@ async function main() {
 
   const server = new ApolloServer({
     schema,
+    introspection: true,
     csrfPrevention: true,
     plugins: [
       // Proper shutdown for the HTTP server.
