@@ -19,5 +19,8 @@
     },
     "noImplicitAny": false
   },
+  "ts-node": {
+    "esm": true
+  },
   "exclude": ["node_modules", "dist"]
 }
