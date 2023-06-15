@@ -72,6 +72,10 @@ export interface MessageSentSubscriptionPayload {
   session: Session;
 }
 
+export interface conversationDeletedSubscriptionPayload {
+  conversationDeleted: ConversationPopulated;
+}
+
 export type MessagePopulated = Prisma.MessageGetPayload<{
   include: typeof messagePopulated;
 }>;

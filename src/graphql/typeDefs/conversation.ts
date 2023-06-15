@@ -21,6 +21,10 @@ const typeDef = gql`
     ): Boolean
   }
 
+  type Mutation {
+    deleteConversation(conversationId: String!, session: Session!): Boolean
+  }
+
   type Subscription {
     conversationCreated(session: Session): Conversation
   }
@@ -29,6 +33,16 @@ const typeDef = gql`
     conversationUpdated(
       session: Session
     ): ConversationUpdatedSubscriptionPayload
+  }
+
+  type Subscription {
+    conversationDeleted(
+      session: Session
+    ): ConversationDeletedSubscriptionPayload
+  }
+
+  type ConversationDeletedSubscriptionPayload {
+    id: String
   }
 
   type CreateConversationResponse {
