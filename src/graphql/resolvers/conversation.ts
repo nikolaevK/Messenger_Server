@@ -85,6 +85,71 @@ const resolvers = {
         throw new Error("createConversation error");
       }
     },
+    leaveConversation: async function (
+      _: any,
+      args: { conversationId: string; session: Session },
+      context: GraphQLContext
+    ): Promise<boolean> {
+      const { prisma, pubsub } = context;
+      const { conversationId, session } = args;
+
+      const {
+        user: { id: userId },
+      } = session;
+
+      if (!session?.user) throw new Error("Not Authorized");
+
+      try {
+        const participant = await prisma.conversationParticipant.findFirst({
+          where: {
+            conversationId,
+            userId,
+          },
+          include: participantPopulated,
+        });
+
+        await prisma.conversationParticipant.delete({
+          where: {
+            id: participant?.id,
+          },
+        });
+
+        const updatedConversation = await prisma.conversation.findFirst({
+          where: {
+            id: conversationId,
+          },
+          include: conversationPopulated,
+        });
+
+        // To avoid deep mutation which is performed further
+        // save deep clone and not the shallow copy
+        const conversation = JSON.parse(JSON.stringify(updatedConversation));
+
+        // inserting the participant who left the conversation
+        // to reflect changes in his or her UI
+        if (updatedConversation)
+          updatedConversation.participants = [participant!];
+
+        // this mutation will make it look like conversation is deleted
+        // for participant who left the conversation
+        pubsub.publish("CONVERSATION_DELETED", {
+          conversationDeleted: updatedConversation,
+        });
+
+        // this mutation will display new state of conversation to
+        // participants who are still in conversation
+        pubsub.publish("CONVERSATION_UPDATED", {
+          conversationUpdated: {
+            conversation,
+          },
+        });
+
+        return true;
+      } catch (error: any) {
+        console.log("leaveConversation error", error);
+        throw new Error("leaveConversation error");
+      }
+    },
     markConversationAsRead: async function (
       _: any,
       args: { userId: string; session: Session; conversationId: string },

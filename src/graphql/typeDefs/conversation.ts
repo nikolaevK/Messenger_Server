@@ -22,6 +22,10 @@ const typeDef = gql`
   }
 
   type Mutation {
+    leaveConversation(conversationId: String!, session: Session!): Boolean
+  }
+
+  type Mutation {
     deleteConversation(conversationId: String!, session: Session!): Boolean
   }
 
