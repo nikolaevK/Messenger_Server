@@ -138,11 +138,12 @@ const resolvers = {
             conversation,
           },
         });
+
+        return true;
       } catch (error: any) {
         console.log("sendMessage Error", error);
         throw new Error("sendMessage Error");
       }
-      return true;
     },
   },
   Subscription: {
